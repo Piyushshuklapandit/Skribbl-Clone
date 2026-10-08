@@ -16,7 +16,7 @@ const io = new Server(server, {
   },
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const rooms = {};
 
@@ -147,10 +147,7 @@ function getPublicRoomList() {
     .map((room) => ({ roomId: room.roomId, playerCount: room.players.length, maxPlayers: room.maxPlayers, language: room.language, wordMode: room.wordMode }));
 }
 
-
-// ======================================================
 // START ROUND
-// ======================================================
 
 function startRound(roomId) {
   const room = rooms[roomId];
@@ -283,9 +280,7 @@ function finishRound(roomId, reason = "time") {
 }
 
 
-// ======================================================
 // FINISH GAME
-// ======================================================
 
 function finishGame(roomId) {
   const room = rooms[roomId];
@@ -326,19 +321,14 @@ function finishGame(roomId) {
 }
 
 
-// ======================================================
 // SOCKET CONNECTION
-// ======================================================
 
 io.on("connection", (socket) => {
   console.log(
     `Socket connected: ${socket.id}`
   );
 
-
-  // ====================================================
   // CREATE ROOM
-  // ====================================================
 
   socket.on("create_room", (data) => {
     const {
@@ -485,10 +475,7 @@ io.on("connection", (socket) => {
     socket.emit("public_room_found", room);
   });
 
-
-  // ====================================================
   // JOIN ROOM
-  // ====================================================
 
   socket.on("join_room", ({ roomId, playerName, avatar = 0, spectate = false }) => {
     if (!roomId || !playerName) {
@@ -626,10 +613,7 @@ io.on("connection", (socket) => {
     );
   });
 
-
-  // ====================================================
   // READY
-  // ====================================================
 
   socket.on("toggle_ready", ({ roomId }) => {
     const room = rooms[roomId];
@@ -656,10 +640,7 @@ io.on("connection", (socket) => {
     );
   });
 
-
-  // ====================================================
   // UPDATE ROOM SETTINGS (HOST, LOBBY ONLY)
-  // ====================================================
 
   socket.on("update_room_settings", ({ roomId, setting, value } = {}) => {
     const room = rooms[roomId];
@@ -722,10 +703,7 @@ io.on("connection", (socket) => {
     });
   });
 
-
-  // ====================================================
   // START GAME
-  // ====================================================
 
   socket.on("start_game", ({ roomId }) => {
     const room = rooms[roomId];
@@ -786,10 +764,7 @@ io.on("connection", (socket) => {
     );
   });
 
-
-  // ====================================================
   // WORD CHOSEN
-  // ====================================================
 
   socket.on(
     "word_chosen",
@@ -912,10 +887,7 @@ io.on("connection", (socket) => {
     }
   );
 
-
-  // ====================================================
   // GUESSING
-  // ====================================================
 
   socket.on(
     "guess",
@@ -1011,9 +983,7 @@ io.on("connection", (socket) => {
         return;
       }
 
-      // ================================================
       // CORRECT
-      // ================================================
 
       if (
         userGuess === correctAnswer
@@ -1075,7 +1045,6 @@ io.on("connection", (socket) => {
 
       // ================================================
       // WRONG
-      // ================================================
 
       socket.emit(
         "guess_result",
@@ -1348,9 +1317,7 @@ io.on("connection", (socket) => {
   );
 
 
-  // ====================================================
   // DISCONNECT
-  // ====================================================
 
   socket.on(
     "disconnect",
@@ -1465,15 +1432,12 @@ io.on("connection", (socket) => {
 });
 
 
-// ======================================================
 // START SERVER
-// ======================================================
 
 server.listen(
   PORT,
+  "0.0.0.0",
   () => {
-    console.log(
-      `Server running on http://localhost:${PORT}`
-    );
+    console.log(`Server running on port ${PORT}`);
   }
 );
