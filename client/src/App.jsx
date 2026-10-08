@@ -4,7 +4,7 @@ import DrawingCanvas from "./DrawingCanvas";
 import logoGif from "./assets/logo.gif";
 import "./App.css";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://skribbl-server-39gs.onrender.com");
 const PLAYER_LIMITS = Array.from({ length: 19 }, (_, index) => index + 2);
 const ROUND_LIMITS = Array.from({ length: 9 }, (_, index) => index + 2);
 const DRAW_TIME_OPTIONS = Array.from({ length: 46 }, (_, index) => 15 + index * 5);
